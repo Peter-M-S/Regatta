@@ -1,8 +1,8 @@
+[Deutsch](README.de.md) | English
+
 # ⛵ Regatta
 
 A turn-based sailing strategy game built with **Python** and **Pygame**, inspired by classic dice-driven sailboat racing board games. Race against friends or AI skippers across different maps, navigate wind shifts, manage your spinnaker and puffs, and be the first across the finish line!
-
-[Deutsch](README.de.md) | English
 
 ## Features
 

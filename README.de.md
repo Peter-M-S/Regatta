@@ -1,8 +1,8 @@
+[English](README.md) | Deutsch
+
 # ⛵ Regatta
 
 Ein rundenbasiertes Segel-Strategiespiel mit **Python** und **Pygame**, inspiriert von klassischen würfelbasierten Segelboot-Brettspielen. Tritt gegen Freunde oder KI-Skipper auf verschiedenen Karten an, navigiere durch Windwechsel, setze Spinnaker und Böen geschickt ein und überquere als Erster die Ziellinie!
-
-[English](README.md) | Deutsch
 
 ## Features
 
