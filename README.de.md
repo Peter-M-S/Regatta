@@ -107,3 +107,9 @@ Die Boote müssen um Inseln, den Steg und andere Boote navigieren und dabei die 
 ## Lizenz
 
 Dieses Projekt steht unter der MIT-Lizenz – siehe die Datei [LICENSE](LICENSE) für Details.
+
+## Videos von Alarm am Tisch
+
+[Regeln](https://www.youtube.com/watch?v=B8rBvwPPQMI&t=7s)   
+[Let's Play](https://www.youtube.com/watch?v=U8-ae4mvDUg)  
+[Fazit](https://www.youtube.com/watch?v=5QHavzz359g)  
