@@ -38,7 +38,7 @@ cd <repository-folder>
 python main.py
 ```
 
-By default, `main.py` starts a race on the **South Bay** map with 6 `smartbot` opponents. You can adjust the number of human vs. bot skippers and the chosen map directly in `main.py`:
+By default, `main.py` starts a race on the **South Bay** map with 6 `smartbot` opponents. You can adjust the number of human vs. bot skippers and the chosen map directly in `main.py`. The limit is a total of 6 players.
 
 ```python
 n = (0, 6)  # (number of humans, number of bots)
@@ -96,13 +96,12 @@ Game behavior can be tweaked in `config.py`:
 
 Each round, players roll a die that either:
 - Grants a number of **legs** (moves) to spend on actions such as sailing, tacking, jibing, raising the spinnaker, or activating a puff, or
-- **Shifts the wind** clockwise or counter-clockwise.
+- **Shifts the wind** clockwise or counter-clockwise and rotates the order of turns of players.
 
 Boats must navigate around islands, the dock, and other boats while following right-of-way rules. The goal is to sail through the marks in the correct order and cross the finish line first.
 
 ## AI Skippers
 
-- **simplebot**: a placeholder bot that simply forfeits its turn.
 - **smartbot**: performs a recursive depth-first search over all possible action sequences for the current turn, scoring each resulting position using precomputed BFS distance maps to the next mark, and picks the sequence with the highest score.
 
 ## License

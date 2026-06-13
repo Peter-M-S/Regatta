@@ -38,7 +38,7 @@ cd <repository-folder>
 python main.py
 ```
 
-Standardmäßig startet `main.py` ein Rennen auf der Karte **South Bay** mit 6 `smartbot`-Gegnern. Du kannst die Anzahl von Menschen vs. Bots sowie die Karte direkt in `main.py` anpassen:
+Standardmäßig startet `main.py` ein Rennen auf der Karte **South Bay** mit 6 `smartbot`-Gegnern. Du kannst die Anzahl von Menschen vs. Bots sowie die Karte direkt in `main.py` anpassen. Es können max. 6 Spieler teilnehmen.
 
 ```python
 n = (0, 6)  # (Anzahl Menschen, Anzahl Bots)
@@ -96,7 +96,7 @@ Das Spielverhalten kann in `config.py` angepasst werden:
 
 Jede Runde würfelt jeder Spieler. Der Würfel gewährt entweder:
 - eine Anzahl von **Etappen** (Zügen), die für Aktionen wie Segeln, Wenden, Halsen, Spinnaker setzen oder Bö aktivieren genutzt werden können, oder
-- führt zu einem **Windwechsel** im oder gegen den Uhrzeigersinn.
+- führt zu einem **Windwechsel** im oder gegen den Uhrzeigersinn und rotiert die Reihenfolge der Spieler.
 
 Die Boote müssen um Inseln, den Steg und andere Boote navigieren und dabei die Vorfahrtsregeln beachten. Ziel ist es, die Bojen in der richtigen Reihenfolge zu umsegeln und als Erster die Ziellinie zu überqueren.
 
