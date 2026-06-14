@@ -24,7 +24,20 @@ LANGUAGES = {
     "start_gun_fired": "start_gun_fired",
     "first at Mark": "first at",
     "start": "start",
-    "mark": "Mark"
+    "mark": "Mark",
+    "OPTIONS": "Options",
+    "AUTO_DICE": "Auto-roll die",
+    "SHOW_PATH": "Show path",
+    "SHOW_FLAG": "Show flags",
+    "SHOW_LINES": "Show lines",
+    "SHOW_TICKER": "Show ticker",
+    "SHOW_CLOUDS": "Show clouds",
+    "KEEP_MAIN_WIND_DIRECTION": "Keep main wind",
+    "ADVANCED_RULES": "Advanced rules",
+    "ON": "On",
+    "OFF": "Off",
+    "CANCEL": "Cancel",
+    "OK": "OK"
   },
   "DE": {
     "sail": "segeln *",
@@ -50,7 +63,20 @@ LANGUAGES = {
     "start_gun_fired": "Startschuß!",
     "first at Mark": "als erster",
     "start": "gestartet",
-    "mark": "an Boje"
+    "mark": "an Boje",
+    "OPTIONS": "Optionen",
+    "AUTO_DICE":                 "Auto-Würfeln",
+    "SHOW_PATH":                 "Pfad anzeigen",
+    "SHOW_FLAG":                 "Flaggen anzeigen",
+    "SHOW_LINES":                "Linien anzeigen",
+    "SHOW_TICKER":               "Ticker anzeigen",
+    "SHOW_CLOUDS":               "Wolken anzeigen",
+    "KEEP_MAIN_WIND_DIRECTION":  "Windrichtung halten",
+    "ADVANCED_RULES":            "Erweiterte Regeln",
+    "ON": "An",
+    "OFF": "Aus",
+    "CANCEL": "Abbrechen",
+    "OK": "OK"
   },
   "FR": {
     "sail": "naviguer étape *",

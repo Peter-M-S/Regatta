@@ -30,14 +30,14 @@ class Button:
     self.clicked = False
 
   def update(self, surface: pg.Surface, point: tuple | None = None,
-             new_text: str | None = None, new_color: str | None = None) -> int | None:
+             new_text: str | None = None, new_color: str | None = None) -> str | None:
     if not self.active: return None
 
     self.update_text(new_text=new_text, new_color=new_color)
     if point is not None: self.changeColor(point)
     self.text_rect = self.text_surface.get_rect(center=(self.x, self.y))
     surface.blit(self.text_surface, self.text_rect)
-    self.click_area.center = self.x, self.y
+    self.click_area.center = self.x, self.y  # needed for new position of button in list of options
 
     is_hovering = self.click_area.collidepoint(point) if point is not None else False
 

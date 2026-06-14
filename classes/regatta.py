@@ -5,12 +5,12 @@ import pygame as pg
 import numpy as np
 
 from classes.environment import Wind, Race, Cloud
-from classes.panels import MapPanel, InfoPanel, HUDPanel, SkipperPanel, SettingsPanel, FinalPanel, SettingsMenuPanel
+from classes.panels import MapPanel, InfoPanel, HUDPanel, SkipperPanel, SettingsPanel, FinalPanel, OptionsMenuPanel
 from classes.boat import Boat, BoatRenderer
 from classes.agent import BoatAgent
 from aux.widgets import Ticker
 
-from config import *
+import config as cfg
 from data.constants import *
 from data.map_data import MAP_DATA
 from aux.utils import rc2xy, gettext
@@ -62,7 +62,7 @@ class Regatta:
       self.settings_panel
     ]
     self.final_panel: FinalPanel = FinalPanel(100, 100, 300, len(self.boats) * 50 + 50)
-    self.settings_menu = SettingsMenuPanel()
+    self.settings_menu = OptionsMenuPanel()
     self.settings_menu_open: bool = False
 
   def _init_game(self):
@@ -220,7 +220,7 @@ class Regatta:
       self.start_round(die)
 
   def change_wind(self, die: str):
-    if KEEP_MAIN_WIND_DIRECTION and die in ("CW", "CCW"):
+    if cfg.KEEP_MAIN_WIND_DIRECTION and die in ("CW", "CCW"):
       if (die == "CW" and (self.wind.wwd_idx - 1) % 8 == self.map["windward_index"]) or \
         (die == "CCW" and (self.wind.wwd_idx + 1) % 8 == self.map["windward_index"]):
         die = " "
@@ -288,7 +288,7 @@ class Regatta:
         if event.type == pg.QUIT or (event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE): quit()
         if event.type == pg.KEYDOWN and event.key == pg.K_p:
           paused = not paused
-        if event.type == SOUND_FINISHED and not any(b.finished for b in self.boats) and SHOW_CLOUDS:
+        if event.type == SOUND_FINISHED and not any(b.finished for b in self.boats) and cfg.SHOW_CLOUDS:
           x, y = rc2xy(self.map["race"], self.cell_size)
           sprite = self.wind.clouds[0].sprite
           self.wind.clouds.append(Cloud(x, y, sprite, 2))
@@ -313,7 +313,7 @@ class Regatta:
       if not selection_sequence:
         if self.can_roll:
           selection_sequence = ["roll"]
-          if self.active_boat.skipper == "human" and not AUTO_DICE:
+          if self.active_boat.skipper == "human" and not cfg.AUTO_DICE:
             selection_sequence = [self.get_selection()]
 
         elif self.active_boat.skipper == "human":
@@ -390,9 +390,8 @@ class Regatta:
         elif result == "cancel":
           self.settings_menu_open = False
 
-      if SHOW_TICKER:
-        self.game_ticker.update()
-        self.game_ticker.draw(self.window)
+      self.game_ticker.update()
+      if cfg.SHOW_TICKER: self.game_ticker.draw(self.window)
 
       if self.game_over:
         self.blit_final_panel()

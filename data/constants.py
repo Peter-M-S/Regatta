@@ -3,6 +3,7 @@ from screeninfo import get_monitors
 
 FPS = 60
 WIDTH, HEIGHT = [(m.width - 25, m.height - 75) for m in get_monitors() if m.is_primary][0]
+ZOOM_FACTOR: float = 2.0
 
 BG_COLOR_1 = "grey90"
 DEPTH_COLORS = [
@@ -36,6 +37,10 @@ PANEL_DATA: dict = {  # x, y, width, height
 DIRECTIONS = [(-1, 0), (-1, 1), (0, 1), (1, 1), (1, 0), (1, -1), (0, -1), (-1, -1)]
 DIRECTION_IDX = list(range(8))
 SPACES = [0, 1, 2, 3, 2, 3, 2, 1]
+DIE_SIDES: list = [1, 2, 2, 3, 'CW', 'CCW']  # original die
+# DIE_SIDES: list = [1, 2, 2, 3]  # no wind change
+# DIE_SIDES: list = [3, 3]  # no wind change, max legs
+# DIE_SIDES: list =[1, 1, 2, 2, 2, 2, 3, 3, 'CW', 'CCW', ' ', ' ']   # less volatile wind change
 
 BOAT_NAMES = ['Juliet', 'Romeo', 'Mike', 'Oscar', 'Charlie', 'Victor']
 BOAT_COLORS = ['blue', 'red', 'royalblue4', 'yellow', 'purple', 'white']

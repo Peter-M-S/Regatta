@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 import pygame as pg
 
-from config import *
+import config as cfg
 from data.constants import *
 from data.map_data import MAP_DATA
 from aux.utils import rc2xy
@@ -50,13 +50,13 @@ class Wind:
     wwd_idx %= 8
     self.rose = DIRECTION_IDX[-wwd_idx:] + DIRECTION_IDX[:-wwd_idx]
 
-  def draw(self, surface: pg.Surface, legs: int = 1) -> None:
-    if not SHOW_CLOUDS: return
+  def draw(self, surface: pg.Surface, legs: int = 1, show_clouds: bool = True) -> None:
     sr, sc = 0, self.cell_size * 2 * self.lee_idx
     sprite = pg.Surface((self.cell_size * 2, self.cell_size * 2), pg.SRCALPHA)
     sprite.blit(self.spritesheet, (-sc, -sr))
     surface.blit(sprite, self.position)
     self.update_clouds(legs)
+    if not show_clouds: return
     for c in self.clouds:
       surface.blit(c.sprite, (c.x, c.y))
 
@@ -153,8 +153,8 @@ class Race:
 
     surface.blit(self.boat, rc2xy(self.position, self.cell_size, False))
     for i, mark in enumerate(self.marks):
-      mark.draw(surface, self.cell_size, show_lines=SHOW_LINES)
-    if SHOW_LINES:
+      mark.draw(surface, self.cell_size, show_lines=cfg.SHOW_LINES)
+    if cfg.SHOW_LINES:
       line, c, w = self.start_line, "orange", 3
       points = [rc2xy(pos, self.cell_size) for pos in line]
       pg.draw.lines(surface, c, False, points, w)
@@ -182,7 +182,7 @@ class Mark:
     self.second_to: set = {(sr+dr, sc+dc) for sr, sc in second_from}
     self.second_from = set(second_from[1:-1])
 
-  def draw(self, surface: pg.Surface, cell_size, show_lines: bool = SHOW_LINES) -> None:
+  def draw(self, surface: pg.Surface, cell_size, show_lines: bool = cfg.SHOW_LINES) -> None:
     pg.draw.circle(surface, "darkred", rc2xy(self.position, cell_size), cell_size // 5, 0)
     pg.draw.circle(surface, "red", rc2xy(self.position, cell_size), cell_size // 6, 0)
     if show_lines:
