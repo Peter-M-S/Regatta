@@ -37,3 +37,15 @@ CURRENT_LANG = "DE"
 
 # DEBUG_DIST_MAPS = True
 DEBUG_DIST_MAPS = False
+
+# Zentrales Dict für das Settings-Menü (nur toggle-bare bool-Einstellungen)
+SETTINGS_OPTIONS: dict = {
+    "AUTO_DICE":                 "Auto-Würfeln",
+    "SHOW_PATH":                 "Pfad anzeigen",
+    "SHOW_FLAG":                 "Flaggen anzeigen",
+    "SHOW_LINES":                "Linien anzeigen",
+    "SHOW_TICKER":               "Ticker anzeigen",
+    "SHOW_CLOUDS":               "Wolken anzeigen",
+    "KEEP_MAIN_WIND_DIRECTION":  "Windrichtung halten",
+    "ADVANCED_RULES":            "Erweiterte Regeln",
+}

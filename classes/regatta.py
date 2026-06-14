@@ -5,7 +5,7 @@ import pygame as pg
 import numpy as np
 
 from classes.environment import Wind, Race, Cloud
-from classes.panels import MapPanel, InfoPanel, HUDPanel, SkipperPanel, SettingsPanel, FinalPanel
+from classes.panels import MapPanel, InfoPanel, HUDPanel, SkipperPanel, SettingsPanel, FinalPanel, SettingsMenuPanel
 from classes.boat import Boat, BoatRenderer
 from classes.agent import BoatAgent
 from aux.widgets import Ticker
@@ -62,6 +62,8 @@ class Regatta:
       self.settings_panel
     ]
     self.final_panel: FinalPanel = FinalPanel(100, 100, 300, len(self.boats) * 50 + 50)
+    self.settings_menu = SettingsMenuPanel()
+    self.settings_menu_open: bool = False
 
   def _init_game(self):
     self.blocked_fix |= self.map_panel.blocked_positions
@@ -264,7 +266,10 @@ class Regatta:
                           )
     self.info_panel.update(self.round_n, self.legs_in_turn, list(self.boats), self.active_idx, self.renderer)
     self.hud_panel.update(self.active_boat)
-    self.zoom_in = self.settings_panel.update(self.zoom_in)
+    self.zoom_in, open_req = self.settings_panel.update(self.zoom_in)
+    if open_req:
+      self.settings_menu.load()
+      self.settings_menu_open = True
 
   def blit_panels(self) -> None:
     for panel in self.panels: self.window.blit(panel.surface, panel.rect.topleft)
@@ -371,6 +376,20 @@ class Regatta:
       self.update_panels()
 
       self.blit_panels()
+
+      # ── SETTINGS-MENÜ (modal, Spiel pausiert) ──────────────────────────
+      if self.settings_menu_open:
+        result = self.settings_menu.update()
+        self.window.blit(self.settings_menu.surface,
+                         self.settings_menu.rect.topleft)
+        if result == "ok":
+          self.settings_menu.apply()
+          self.settings_menu_open = False
+          # FPS ggf. neu setzen, falls AUTO_DICE/Bots-Status sich ändert
+          # self.fps = 10 if "human" in self.skippers else FPS
+        elif result == "cancel":
+          self.settings_menu_open = False
+
       if SHOW_TICKER:
         self.game_ticker.update()
         self.game_ticker.draw(self.window)

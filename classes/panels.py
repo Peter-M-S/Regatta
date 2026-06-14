@@ -6,7 +6,8 @@ import pygame as pg
 from classes.boat import Boat
 from classes.environment import Wind, Race
 
-from config import *
+# from config import *
+import config as cfg
 from data.constants import *
 from data.map_data import MAP_DATA
 from aux.utils import rc2xy, get_dock, gettext
@@ -104,7 +105,7 @@ class MapPanel(Panel):
 
   def update(self, boats: deque, active_idx: int, wind: Wind,
              legs: int, race: Race, renderer: dict, zoom_in: bool,  dist_maps=None):
-    if DEBUG_DIST_MAPS and dist_maps is not None:
+    if cfg.DEBUG_DIST_MAPS and dist_maps is not None:
       for i, dist_map in enumerate(dist_maps):
         self.draw_dist_map(dist_map)
         pg.image.save(self.surface, f"assets/dist_map_{i:0>2}.png")
@@ -114,7 +115,7 @@ class MapPanel(Panel):
       race.draw(surface)
 
     if boats is not None and renderer is not None:
-      for b in boats: renderer[b.name].draw(surface, b, SHOW_PATH, SHOW_FLAG)
+      for b in boats: renderer[b.name].draw(surface, b, cfg.SHOW_PATH, cfg.SHOW_FLAG)
 
     if wind is not None and legs is not None:
       wind.draw(surface, legs)
@@ -125,9 +126,9 @@ class MapPanel(Panel):
       else:
         pos = (0, 0)
       x, y = rc2xy(pos, self.cell_size)
-      zoomed_map = pg.transform.scale_by(surface, ZOOM_FACTOR)
-      offset_x = self.rect.centerx - x * ZOOM_FACTOR
-      offset_y = self.rect.centery - y * ZOOM_FACTOR
+      zoomed_map = pg.transform.scale_by(surface, cfg.ZOOM_FACTOR)
+      offset_x = self.rect.centerx - x * cfg.ZOOM_FACTOR
+      offset_y = self.rect.centery - y * cfg.ZOOM_FACTOR
       self.surface.fill("Lightblue")
       self.surface.blit(zoomed_map, (offset_x, offset_y))
     else:
@@ -298,8 +299,8 @@ class SettingsPanel(Panel):
   def __init__(self, x, y, width, height):
     super().__init__(x, y, width, height)
     self.buttons: list = [
-      Button((PANEL_WIDTH // 4, PANEL_HEIGHT // 2), f"Settings", 25,
-             (PANEL_WIDTH, PANEL_HEIGHT), None),
+      Button((PANEL_WIDTH // 4, PANEL_HEIGHT // 2), "⚙", 25,
+             (PANEL_WIDTH, PANEL_HEIGHT), action=lambda: "open_settings"),
       Button((3 * PANEL_WIDTH // 4, PANEL_HEIGHT // 2), f"Zoom in", 25,
              (PANEL_WIDTH, PANEL_HEIGHT), action=lambda: "toggle_zoom")  # action= lambda s=s: s
     ]
@@ -310,12 +311,14 @@ class SettingsPanel(Panel):
     pg.draw.rect(self.surface, 'black', _rect, 1)
     pg.draw.line(self.surface, 'black', _rect.midtop, _rect.midbottom, 1)
 
-  def update(self, zoom_in: bool) -> bool:
+  def update(self, zoom_in: bool) -> tuple[bool, bool]:
     self._draw_background()
-    self.buttons[0].update(self.surface, self.mouse_pos)
+    # self.buttons[0].update(self.surface, self.mouse_pos)
+    open_req = self.buttons[0].update(self.surface, self.mouse_pos) == "open_settings"
     new_text = gettext("zoom out") if zoom_in else gettext("zoom in")
     result = self.buttons[1].update(self.surface, self.mouse_pos, new_text=new_text)
-    return not zoom_in if result == "toggle_zoom" else zoom_in
+    new_zoom = not zoom_in if result == "toggle_zoom" else zoom_in
+    return new_zoom, open_req
 
 
 class FinalPanel(Panel):
@@ -336,6 +339,119 @@ class FinalPanel(Panel):
       flag.update_image(new_size=(24, 16))
       flag.update(self.surface)
 
+
+class SettingsMenuPanel(Panel):
+    """Modales Einstellungs-Menü. Wird über SettingsPanel.buttons[0] geöffnet."""
+
+    ROW_H      = 44          # Höhe einer Zeile
+    PADDING    = 20
+    BTN_W      = 100
+    BTN_H      = 36
+
+    def __init__(self):
+        keys   = list(cfg.SETTINGS_OPTIONS.keys())
+        labels = list(cfg.SETTINGS_OPTIONS.values())
+        n      = len(keys)
+
+        w = 420
+        h = self.PADDING * 2 + n * self.ROW_H + 20 + self.BTN_H + self.PADDING
+
+        # zentriert auf dem Bildschirm
+        from data.constants import WIDTH, HEIGHT
+        x = (WIDTH  - w) // 2
+        y = (HEIGHT - h) // 2
+
+        super().__init__(x, y, w, h)
+
+        self.keys:   list[str] = keys
+        self.labels: list[str] = labels
+
+        # aktuelle Arbeitskopie der Werte
+        self.values: dict[str, bool] = {}
+
+        # Toggle-Buttons (True/False)
+        self.toggles: dict[str, Button] = {}
+        for i, key in enumerate(self.keys):
+            cy = self.PADDING + i * self.ROW_H + self.ROW_H // 2
+            cx = w - self.PADDING - self.BTN_W // 2
+            self.toggles[key] = Button(
+                center_pos=(cx, cy),
+                text="",
+                font_size=18,
+                size=(self.BTN_W, 30),
+                action=lambda k=key: k          # gibt den Key zurück
+            )
+
+        # OK / Abbrechen
+        mid   = w // 2
+        btn_y = self.PADDING + n * self.ROW_H + 20 + self.BTN_H // 2
+        self.btn_ok = Button(
+            (mid + self.BTN_W // 2 + 10, btn_y), "OK", 20,
+            (self.BTN_W, self.BTN_H), action=lambda: "ok"
+        )
+        self.btn_cancel = Button(
+            (mid - self.BTN_W // 2 - 10, btn_y), "Abbrechen", 20,
+            (self.BTN_W, self.BTN_H), action=lambda: "cancel"
+        )
+
+        self.font_label = pg.font.SysFont("Arial", 18)
+        self.font_title = pg.font.SysFont("Arial", 22, bold=True)
+
+    # Arbeitskopie aus aktuellem config-Modul laden
+    def load(self) -> None:
+        self.values = {k: getattr(cfg, k) for k in self.keys}
+
+    # Arbeitskopie in config-Modul schreiben
+    def apply(self) -> None:
+        for k, v in self.values.items():
+            setattr(cfg, k, v)
+
+    def _draw_background(self) -> None:
+        self.surface.fill(BG_COLOR_1)
+        pg.draw.rect(self.surface, "black", self.surface.get_rect(), 2)
+
+        # Titel
+        title = self.font_title.render("⚙  Einstellungen", True, "black")
+        self.surface.blit(title, title.get_rect(centerx=self.rect.w // 2, y=6))
+
+    def update(self) -> str | None:
+        """
+        Zeichnet das Menü und verarbeitet Klicks.
+        Gibt "ok", "cancel" oder None zurück.
+        """
+        self._draw_background()
+        mp = self.mouse_pos
+
+        for i, key in enumerate(self.keys):
+            cy = self.PADDING + i * self.ROW_H + self.ROW_H // 2
+
+            # Trennlinie
+            pg.draw.line(self.surface, "grey70",
+                         (self.PADDING, cy + self.ROW_H // 2 - 2),
+                         (self.rect.w - self.PADDING, cy + self.ROW_H // 2 - 2))
+
+            # Label
+            label_surf = self.font_label.render(self.labels[i], True, "black")
+            self.surface.blit(label_surf,
+                              label_surf.get_rect(midleft=(self.PADDING, cy)))
+
+            # Toggle-Button Text + Farbe je nach Wert
+            val = self.values[key]
+            btn = self.toggles[key]
+            btn_text  = "AN"  if val else "AUS"
+            btn_color = "green4" if val else "firebrick"
+            result = btn.update(self.surface, point=mp,
+                                new_text=btn_text, new_color=btn_color)
+            if result is not None:          # Klick → Wert umschalten
+                self.values[result] = not self.values[result]
+
+        # OK / Abbrechen
+        if self.btn_ok.update(self.surface, point=mp) == "ok":
+            return "ok"
+        if self.btn_cancel.update(self.surface, point=mp) == "cancel":
+            return "cancel"
+
+        return None
 
 if __name__ == '__main__':
     pass

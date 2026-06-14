@@ -7,11 +7,11 @@ def main():
   # n = (3, 0)
   # n = (1, 0)
   # n = (1, 2)
-  n = (0, 3)
-  # n = (0, 6)
+  # n = (0, 3)
+  n = (0, 6)
 
-  map_name = "North Bay"
-  # map_name = "South Bay"
+  # map_name = "North Bay"
+  map_name = "South Bay"
 
   skippers = (
       ['human'] * n[0]
