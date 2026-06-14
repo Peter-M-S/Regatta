@@ -298,7 +298,7 @@ class SettingsPanel(Panel):
   def __init__(self, x, y, width, height):
     super().__init__(x, y, width, height)
     self.buttons: list = [
-      Button((PANEL_WIDTH // 4, PANEL_HEIGHT // 2), f" ", 25,
+      Button((PANEL_WIDTH // 4, PANEL_HEIGHT // 2), f"Settings", 25,
              (PANEL_WIDTH, PANEL_HEIGHT), None),
       Button((3 * PANEL_WIDTH // 4, PANEL_HEIGHT // 2), f"Zoom in", 25,
              (PANEL_WIDTH, PANEL_HEIGHT), action=lambda: "toggle_zoom")  # action= lambda s=s: s
