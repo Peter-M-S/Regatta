@@ -336,5 +336,6 @@ class FinalPanel(Panel):
       flag.update_image(new_size=(24, 16))
       flag.update(self.surface)
 
+
 if __name__ == '__main__':
     pass
