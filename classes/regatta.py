@@ -292,16 +292,16 @@ class Regatta:
         race_started = True
         self.game_ticker.add_text(gettext("start_gun_fired") + " --- Good luck Skippers!", 1)
 
-      if self.game_over:
-        self.blit_final_panel()
-        pg.display.flip()
-        self.clock.tick(self.fps)
-        continue
+      # if self.game_over:
+      #   self.blit_final_panel()
+      #   pg.display.flip()
+      #   self.clock.tick(self.fps)
+      #   continue
 
       if paused:
         continue
 
-      if len(self.boats) == len(self.ranking):
+      if not self.game_over and len(self.boats) == len(self.ranking):
         self.final_panel.update(self.ranking, self.renderer)
         self.game_over = True
 
@@ -374,6 +374,11 @@ class Regatta:
       if SHOW_TICKER:
         self.game_ticker.update()
         self.game_ticker.draw(self.window)
+
+      if self.game_over:
+        self.blit_final_panel()
+        # pg.display.flip()
+        # self.clock.tick(self.fps)
 
       pg.display.update()
 
