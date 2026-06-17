@@ -22,27 +22,15 @@ KEEP_MAIN_WIND_DIRECTION: bool = True
 ADVANCED_RULES: bool = True
 # ADVANCED_RULES: bool = False
 
+# todo include selection of langauge (radio button or list selection)
 CURRENT_LANG = "DE"
 # CURRENT_LANG = "EN"
 # CURRENT_LANG = "FR"
 # CURRENT_LANG = "ES"
 
+# todo remove from code
 # DEBUG_DIST_MAPS = True
 DEBUG_DIST_MAPS = False
 
-# Zentrales Dict für das Settings-Menü (nur toggle-bare bool-Einstellungen)
-# todo move texts to strings for each language
-# todo include selection of langauge (radio button or list selection)
 SETTINGS_OPTIONS: list = ["AUTO_DICE", "SHOW_PATH", "SHOW_FLAG", "SHOW_LINES", "SHOW_TICKER",
                           "SHOW_CLOUDS", "KEEP_MAIN_WIND_DIRECTION", "ADVANCED_RULES"]
-
-# SETTINGS_OPTIONS: dict = {
-#   "AUTO_DICE": "Auto-Würfeln",
-#   "SHOW_PATH": "Pfad anzeigen",
-#   "SHOW_FLAG": "Flaggen anzeigen",
-#   "SHOW_LINES": "Linien anzeigen",
-#   "SHOW_TICKER": "Ticker anzeigen",
-#   "SHOW_CLOUDS": "Wolken anzeigen",
-#   "KEEP_MAIN_WIND_DIRECTION": "Windrichtung halten",
-#   "ADVANCED_RULES": "Erweiterte Regeln",
-# }
