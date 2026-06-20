@@ -39,6 +39,7 @@ class Regatta:
     self._init_boats()
     self._init_agents(map_name)
     self._init_game()
+    self.settings_menu_open: bool = False
     self._init_panels()
     self._init_ticker(map_name)
 
@@ -63,7 +64,7 @@ class Regatta:
     ]
     self.final_panel: FinalPanel = FinalPanel(100, 100, 300, len(self.boats) * 50 + 50)
     self.settings_menu = OptionsMenuPanel()
-    self.settings_menu_open: bool = False
+    # self.settings_menu_open: bool = False
 
   def _init_game(self):
     self.blocked_fix |= self.map_panel.blocked_positions
@@ -297,29 +298,26 @@ class Regatta:
         race_started = True
         self.game_ticker.add_text(gettext("start_gun_fired") + " --- Good luck Skippers!", 1)
 
-      # if self.game_over:
-      #   self.blit_final_panel()
-      #   pg.display.flip()
-      #   self.clock.tick(self.fps)
-      #   continue
+      if (self.game_over and all_humans_home == self.skippers.count("human")
+         and all(a.at_final_position for a in self.agents.values())):
+        # todo insert here return to main menu button
+        pg.display.flip()
+        continue
 
       if paused:
         continue
 
-      # ── SETTINGS-MENÜ (modal, Spiel pausiert) ──────────────────────────
+      # ── OPTIONS-MENU (modal, game pausing) ──────────────────────────
       if self.settings_menu_open:
         result = self.settings_menu.update()
 
         if result == "ok":
           self.settings_menu.apply()
           self.settings_menu_open = False
-          # FPS ggf. neu setzen, falls AUTO_DICE/Bots-Status sich ändert
-          # self.fps = 10 if "human" in self.skippers else FPS
         elif result == "cancel":
           self.settings_menu_open = False
 
-        self.window.blit(self.settings_menu.surface,
-                         self.settings_menu.rect.topleft)
+        self.window.blit(self.settings_menu.surface, self.settings_menu.rect.topleft)
         pg.display.update()
         continue
 
@@ -393,8 +391,6 @@ class Regatta:
       self.update_panels()
 
       self.blit_panels()
-
-
 
       self.game_ticker.update()
       if cfg.SHOW_TICKER: self.game_ticker.draw(self.window)
