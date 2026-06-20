@@ -306,6 +306,23 @@ class Regatta:
       if paused:
         continue
 
+      # ── SETTINGS-MENÜ (modal, Spiel pausiert) ──────────────────────────
+      if self.settings_menu_open:
+        result = self.settings_menu.update()
+
+        if result == "ok":
+          self.settings_menu.apply()
+          self.settings_menu_open = False
+          # FPS ggf. neu setzen, falls AUTO_DICE/Bots-Status sich ändert
+          # self.fps = 10 if "human" in self.skippers else FPS
+        elif result == "cancel":
+          self.settings_menu_open = False
+
+        self.window.blit(self.settings_menu.surface,
+                         self.settings_menu.rect.topleft)
+        pg.display.update()
+        continue
+
       if not self.game_over and len(self.boats) == len(self.ranking):
         self.final_panel.update(self.ranking, self.renderer)
         self.game_over = True
@@ -377,18 +394,7 @@ class Regatta:
 
       self.blit_panels()
 
-      # ── SETTINGS-MENÜ (modal, Spiel pausiert) ──────────────────────────
-      if self.settings_menu_open:
-        result = self.settings_menu.update()
-        self.window.blit(self.settings_menu.surface,
-                         self.settings_menu.rect.topleft)
-        if result == "ok":
-          self.settings_menu.apply()
-          self.settings_menu_open = False
-          # FPS ggf. neu setzen, falls AUTO_DICE/Bots-Status sich ändert
-          # self.fps = 10 if "human" in self.skippers else FPS
-        elif result == "cancel":
-          self.settings_menu_open = False
+
 
       self.game_ticker.update()
       if cfg.SHOW_TICKER: self.game_ticker.draw(self.window)

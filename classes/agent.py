@@ -67,6 +67,7 @@ class BoatAgent:
     if last == "windward": return options - {"leeward"}  # no leeward after windward
     if last == "unpuff": return options - {"puff"}  # no activation after puff deactivation
     if last == "puff": return options - {"unpuff"}  # no deactivation after puff activation
+    if last == "unspin": return options - {"spin"}  # no spinnaker up after spinnaker down
     return options
 
   @staticmethod

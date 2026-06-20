@@ -13,8 +13,8 @@ SHOW_LINES: bool = False
 SHOW_TICKER: bool = True
 # SHOW_TICKER = False
 
-# SHOW_CLOUDS = True
-SHOW_CLOUDS: bool = False
+SHOW_CLOUDS = True
+# SHOW_CLOUDS: bool = False
 
 KEEP_MAIN_WIND_DIRECTION: bool = True
 # KEEP_MAIN_WIND_DIRECTION: bool = False
