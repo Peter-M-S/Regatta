@@ -286,7 +286,8 @@ class Regatta:
     selection_sequence: list = []
     while True:
       for event in pg.event.get():
-        if event.type == pg.QUIT or (event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE): quit()
+        if event.type == pg.QUIT or (event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE):
+          return
         if event.type == pg.KEYDOWN and event.key == pg.K_p:
           paused = not paused
         if event.type == SOUND_FINISHED and not any(b.finished for b in self.boats) and cfg.SHOW_CLOUDS:

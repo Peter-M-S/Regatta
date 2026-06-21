@@ -445,5 +445,26 @@ class OptionsMenuPanel(Panel):
     return None
 
 
+class IntroPanel(Panel):
+
+  def __init__(self, x, y, width, height):
+    super().__init__(x, y, width, height)
+    self.start_button = Button((width//2, height//4), "Start Regatta", 25, (100,30),
+                               action=lambda k="start": k)
+    self.quit_button = Button((width//2, height//4*3), "Quit", 25, (100,30),
+                              action=lambda k="quit": k)
+
+  def update(self) -> None | str:
+    self.surface.fill(BG_COLOR_1)
+    if self.start_button.update(self.surface, point=pg.mouse.get_pos()) == "start":
+      return "start"
+    elif self.quit_button.update(self.surface, point=pg.mouse.get_pos()) == "quit":
+      return "quit"
+    return None
+
+
+
+
+
 if __name__ == '__main__':
   pass
