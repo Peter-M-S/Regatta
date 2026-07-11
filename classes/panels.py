@@ -299,7 +299,7 @@ class SettingsPanel(Panel):
   def __init__(self, x, y, width, height):
     super().__init__(x, y, width, height)
     self.buttons: list = [
-      Button((PANEL_WIDTH // 4, PANEL_HEIGHT // 2), "Options", 25,
+      Button((PANEL_WIDTH // 4, PANEL_HEIGHT // 2), gettext("OPTIONS"), 25,
              (PANEL_WIDTH//2, PANEL_HEIGHT), action=lambda: "open_options"),
       Button((3 * PANEL_WIDTH // 4, PANEL_HEIGHT // 2), f"Zoom in", 25,
              (PANEL_WIDTH//2, PANEL_HEIGHT), action=lambda: "toggle_zoom")  # action= lambda s=s: s

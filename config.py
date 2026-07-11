@@ -1,5 +1,5 @@
-# AUTO_DICE: bool = True
-AUTO_DICE: bool = False
+AUTO_DICE: bool = True
+# AUTO_DICE: bool = False
 
 # SHOW_PATH = True
 SHOW_PATH: bool = False
@@ -10,8 +10,8 @@ SHOW_FLAG: bool = False
 # SHOW_LINES = True
 SHOW_LINES: bool = False
 
-SHOW_TICKER: bool = True
-# SHOW_TICKER = False
+# SHOW_TICKER: bool = True
+SHOW_TICKER = False
 
 SHOW_CLOUDS = True
 # SHOW_CLOUDS: bool = False

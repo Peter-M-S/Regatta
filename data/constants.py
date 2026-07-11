@@ -38,8 +38,8 @@ DIRECTIONS = [(-1, 0), (-1, 1), (0, 1), (1, 1), (1, 0), (1, -1), (0, -1), (-1, -
 DIRECTION_IDX = list(range(8))
 SPACES = [0, 1, 2, 3, 2, 3, 2, 1]
 DIE_SIDES: list = [1, 2, 2, 3, 'CW', 'CCW']  # original die
-# DIE_SIDES: list = [1, 2, 2, 3]  # no wind change
 # DIE_SIDES: list = [3, 3]  # no wind change, max legs
+# DIE_SIDES: list = [1, 2, 2, 3]  # no wind change
 # DIE_SIDES: list =[1, 1, 2, 2, 2, 2, 3, 3, 'CW', 'CCW', ' ', ' ']   # less volatile wind change
 
 BOAT_NAMES = ['Juliet', 'Romeo', 'Mike', 'Oscar', 'Charlie', 'Victor']

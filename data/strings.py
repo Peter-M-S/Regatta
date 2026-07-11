@@ -21,7 +21,7 @@ LANGUAGES = {
     "zoom out": "Zoom out",
     "finishes in": "finishes in",
     "round": "round",
-    "start_gun_fired": "start_gun_fired",
+    "start gun fired": "start gun fired",
     "first at Mark": "first at",
     "start": "start",
     "mark": "Mark",
@@ -60,7 +60,7 @@ LANGUAGES = {
     "zoom out": "Kleiner",
     "finishes in": "erreicht Ziel in",
     "round": "Runde",
-    "start_gun_fired": "Startschuß!",
+    "start gun fired": "Startschuß!",
     "first at Mark": "als erster",
     "start": "gestartet",
     "mark": "an Boje",
@@ -99,7 +99,7 @@ LANGUAGES = {
     "zoom out": "Zoom arrière",
     "finishes in": "termine en",
     "round": "tour",
-    "start_gun_fired": "Startschuß!",
+    "start gun fired": "Startschuß!",
     "first at Mark": "premier au marque"
   },
   "ES": {
@@ -123,7 +123,7 @@ LANGUAGES = {
     "zoom out": "Alejar",
     "finishes in": "termina en",
     "round": "ronda",
-    "start_gun_fired": "Startschuß!",
+    "start gun fired": "Startschuß!",
     "first at Mark": "first at Mark"
   }
 }

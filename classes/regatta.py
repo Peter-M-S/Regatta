@@ -24,15 +24,17 @@ class Regatta:
     self.skippers: list = skippers
     self.map: dict = MAP_DATA[map_name]
     self.has_bots: bool = any(b.endswith("bot") for b in skippers)
+    self.humans: int = self.skippers.count("human")
     self.zoom_in: bool = False
     self.current_leg = None
     self.active_idx = None
-    self.game_over = None
+    self.race_over = None
     self.blanket_turn = None
     self.blanket_leg = None
     self.can_roll = None
     self.active_boat = None
     self.legs_in_turn = None
+    self.settings_menu_open = None
 
     self._init_pygame(map_name)
     self._init_environment(map_name)
@@ -76,7 +78,7 @@ class Regatta:
     self.legs_in_turn: int = 0
     self.current_leg: int = 0
     self.can_roll: bool = True
-    self.game_over: bool = False
+    self.race_over: bool = False
 
   def _init_agents(self, map_name: str):
     self.dist_maps: list | None = None
@@ -279,7 +281,7 @@ class Regatta:
 
   def run(self) -> None:
     paused = False
-    all_humans_home: int = 0
+    humans_finished: int = 0
     race_started = False
     first_at_mark = 0
     selection_sequence: list = []
@@ -288,33 +290,22 @@ class Regatta:
         if event.type == pg.QUIT or (event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE): quit()
         if event.type == pg.KEYDOWN and event.key == pg.K_p:
           paused = not paused
-        if event.type == SOUND_FINISHED and not any(b.finished for b in self.boats) and cfg.SHOW_CLOUDS:
-          x, y = rc2xy(self.map["race"], self.cell_size)
-          sprite = self.wind.clouds[0].sprite
-          self.wind.clouds.append(Cloud(x, y, sprite, 2))
-
-      if self.round_n == 0 and not race_started:
-        race_started = True
-        self.game_ticker.add_text(gettext("start_gun_fired") + " --- Good luck Skippers!", 1)
-
-      # if self.game_over:
-      #   self.blit_final_panel()
-      #   pg.display.flip()
-      #   self.clock.tick(self.fps)
-      #   continue
+        # if event.type == SOUND_FINISHED and not any(b.finished for b in self.boats) and cfg.SHOW_CLOUDS:
+        #   x, y = rc2xy(self.map["race"], self.cell_size)
+        #   sprite = self.wind.clouds[0].sprite
+        #   self.wind.clouds.append(Cloud(x, y, sprite, 2))
 
       if paused:
         continue
 
-      # ── SETTINGS-MENÜ (modal, Spiel pausiert) ──────────────────────────
+      # handle settings menu
       if self.settings_menu_open:
         result = self.settings_menu.update()
 
         if result == "ok":
           self.settings_menu.apply()
           self.settings_menu_open = False
-          # FPS ggf. neu setzen, falls AUTO_DICE/Bots-Status sich ändert
-          # self.fps = 10 if "human" in self.skippers else FPS
+
         elif result == "cancel":
           self.settings_menu_open = False
 
@@ -323,31 +314,50 @@ class Regatta:
         pg.display.update()
         continue
 
-      if not self.game_over and len(self.boats) == len(self.ranking):
-        self.final_panel.update(self.ranking, self.renderer)
-        self.game_over = True
+      # end regatta
+      if self.race_over and all(a.at_final_position for a in self.agents.values()):
+        continue
 
+      # start sequence (gun, smoke, ticker)
+      if self.round_n == 0 and not race_started:
+        race_started = True
+        self.sfx_start_gun.play(maxtime=500)
+        if cfg.SHOW_CLOUDS:
+          x, y = rc2xy(self.map["race"], self.cell_size)
+          sprite = self.wind.clouds[0].sprite
+          self.wind.clouds.append(Cloud(x, y, sprite, 2))
+        self.game_ticker.add_text(gettext("start gun fired") + " --- Good luck Skippers!", 1)
+
+      # set game over when all boats are ranked
+      if not self.race_over and len(self.boats) == len(self.ranking):
+        self.final_panel.update(self.ranking, self.renderer)
+        self.race_over = True
+
+      # make sure there is a selection sequence
       if not selection_sequence:
         if self.can_roll:
-          selection_sequence = ["roll"]
           if self.active_boat.skipper == "human" and not cfg.AUTO_DICE:
             selection_sequence = [self.get_selection()]
+          else:
+            selection_sequence = ["roll"]
 
         elif self.active_boat.skipper == "human":
-          if all_humans_home == self.skippers.count("human"):
-            selection_sequence = ["forfeit"]
-          else:
+          if humans_finished != self.humans:
             selection_sequence = [self.get_selection()]
+          else:
+            selection_sequence = ["forfeit"]
 
         else:  # self.active_boat.skipper != "human":
           selection_sequence = self.agents[self.active_boat.name].selection(*self.validation_parameters)
 
       selection = selection_sequence.pop(0)
 
-      if selection == "roll":
-        self.process_die()
-      elif selection is not None:
-        self.active_boat.do_action(selection)
+      # apply selection
+      if selection is not None:
+        if selection == "roll":
+          self.process_die()
+        else:
+          self.active_boat.do_action(selection)
 
       # shout-out for first boat at mark
       for boat in self.boats:
@@ -361,6 +371,7 @@ class Regatta:
           first_at_mark += 1
           break
 
+      # increase current leg counter
       if selection in ("sail", "tack", "luff", "port", "star", "unspin"):
         self.current_leg += 1
 
@@ -370,19 +381,18 @@ class Regatta:
                        f"{gettext("round")} {self.round_n}.{self.current_leg}"
         self.game_ticker.add_text(message,1)
         self.ranking[self.active_boat.name] = (self.round_n, self.current_leg)
-        all_humans_home += self.active_boat.skipper == "human"
+        # humans_finished += self.active_boat.skipper == "human"
         self.sfx_finish_horn.play(maxtime=800)
 
       # finalize or forfeit turn
       if selection in ("forfeit", "finalize"):
+        # increase human_finished only when turn is finalized
+        if self.active_boat.finished and self.active_boat.skipper == "human":
+          humans_finished += 1
+
         # when last skipper -> round + 1, start next round with process_die
         if self.active_idx == len(self.boats) - 1:
           self.round_n += 1
-          if self.round_n == 0:
-            channel = self.sfx_start_gun.play()
-            if channel:
-              channel.set_endevent(SOUND_FINISHED)
-
           self.can_roll = True
         # next skipper
         self.active_idx = (self.active_idx + 1) % len(self.boats)
@@ -394,15 +404,12 @@ class Regatta:
 
       self.blit_panels()
 
+      if cfg.SHOW_TICKER:
+        self.game_ticker.update()
+        self.game_ticker.draw(self.window)
 
-
-      self.game_ticker.update()
-      if cfg.SHOW_TICKER: self.game_ticker.draw(self.window)
-
-      if self.game_over:
+      if self.race_over:
         self.blit_final_panel()
-        # pg.display.flip()
-        # self.clock.tick(self.fps)
 
       pg.display.update()
 
