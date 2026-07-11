@@ -2,7 +2,6 @@ import random
 
 from classes.regatta import Regatta
 
-# todo when game over, and bots in after_race_position stop looping rounds
 # todo start with a main menu to select skippers and map, then (re-)open regatta window.
 # todo after game over enable button to return to main menu
 
