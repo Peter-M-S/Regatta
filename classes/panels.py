@@ -105,11 +105,6 @@ class MapPanel(Panel):
 
   def update(self, boats: deque, active_idx: int, wind: Wind,
              legs: int, race: Race, renderer: dict, zoom_in: bool, dist_maps=None):
-    if cfg.DEBUG_DIST_MAPS and dist_maps is not None:
-      for i, dist_map in enumerate(dist_maps):
-        self.draw_dist_map(dist_map)
-        pg.image.save(self.surface, f"assets/dist_map_{i:0>2}.png")
-      return
     surface = self.background.copy()
     if race is not None:
       race.draw(surface)
