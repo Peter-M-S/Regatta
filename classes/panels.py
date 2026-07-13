@@ -6,7 +6,6 @@ import pygame as pg
 from classes.boat import Boat
 from classes.environment import Wind, Race
 
-# from config import *
 import config as cfg
 from data.constants import *
 from data.map_data import MAP_DATA

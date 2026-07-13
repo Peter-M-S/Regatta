@@ -125,8 +125,8 @@ class Ticker:
     self.rect = pg.Rect(rect)
     self.font = font
     self.speed: float = speed
-    self.text_color = BG_COLOR_1
-    self.bg_color = "black"
+    self.text_color = "black"
+    self.bg_color = BG_COLOR_1
 
     # Local drawing surface matching the frame size
     self.surface = pg.Surface((self.rect.width, self.rect.height))

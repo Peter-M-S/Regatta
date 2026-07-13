@@ -135,20 +135,22 @@ class Boat:
   def can_sail(self, blocked_positions: set, round_n: int, start_line: set, other_boats: list) -> bool:
     path = [self.position] + self.next_positions
     path_set = set(path)
+    next_set = set(self.next_positions)
 
     # avoid sailing into blocked position
-    if path_set & blocked_positions:
+    if next_set & blocked_positions:
       return False
 
     # avoid premature start
-    if round_n < 0 and path_set & start_line:
+    if round_n < 0 and next_set & start_line:
       return False
 
     # avoid sailing any trackline the wrong way
+    # need to include current position (path, path_set)
     if len(path) >= 2 and self.next_track_idx > 0:
       # look only for next 2 tracklines
       for from_line, to_line in self.track_lines[self.next_track_idx-1:self.next_track_idx + 2]:
-        if not path_set.intersection(from_line) and not path_set.intersection(to_line): continue
+        if not (path_set & from_line or path_set & to_line): continue
         # check if any of to_line is directly followed by any of from_line -> wrong direction
         for p1, p2 in itertools.pairwise(path):
           if p1 in to_line and p2 in from_line:
@@ -157,12 +159,10 @@ class Boat:
     if not ADVANCED_RULES: return True
 
     # # # # Advanced rules
-
-
     # A port-tack boat shall keep clear of a starboard-tack boat.
     if not self.starboard_tack and \
-       any(path_set & set(other.next_positions) and other.starboard_tack for other in other_boats):
-      # print("starboard has right of way")
+       any(other.starboard_tack and next_set & set(other.next_positions) for other in other_boats):
+      # print("lee has right of way")
       return False
 
     # A windward boat shall keep clear of a leeward boat
@@ -170,7 +170,7 @@ class Boat:
     SELF = pg.Vector2(self.position)
     STARBOARD = pg.Vector2(DIRECTIONS[(self.heading + 2) % 8])
     for other in other_boats:
-      if not path_set.intersection(other.next_positions): continue
+      if not next_set & other.next_positions: continue
       OTHER = pg.Vector2(other.position)
       DELTA = OTHER - SELF  # vector from SELF to OTHER
       dot_product = WIND.dot(DELTA)   # if >0: OTHER is leeward, if <0: OTHER is windward if ==0: look for tack
@@ -188,7 +188,6 @@ class Boat:
           # print("lee has right of way 3")
           return False
 
-    # todo more advanced rules e.g. "tacking/jibing boat keep clear of boat on a tack"
     return True
 
   def possible_options(self, blocked_positions: set, round_n: int, start_line: set, other_boats: list) -> set:

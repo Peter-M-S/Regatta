@@ -15,8 +15,6 @@ from data.constants import *
 from data.map_data import MAP_DATA
 from aux.utils import rc2xy, gettext
 
-SOUND_FINISHED = pg.USEREVENT + 1
-
 
 class Regatta:
   def __init__(self, skippers: list, map_name: str):
@@ -46,7 +44,7 @@ class Regatta:
 
   def _init_ticker(self, map_name: str):
     ticker_font = pg.font.SysFont("Arial", 24)
-    ticker_rect = pg.Rect(0, 960, 500, 40)
+    ticker_rect = pg.Rect(20, HEIGHT-60, 400, 40)
     self.game_ticker = Ticker(ticker_rect, ticker_font,
                               initial_text=f"Welcome to the Regatta at {map_name}! Waiting for race start...",
                               speed=5.0)
@@ -404,7 +402,7 @@ class Regatta:
 
       self.blit_panels()
 
-      if cfg.SHOW_TICKER:
+      if cfg.SHOW_TICKER and self.game_ticker.has_new_text:
         self.game_ticker.update()
         self.game_ticker.draw(self.window)
 
