@@ -170,7 +170,7 @@ class Boat:
     SELF = pg.Vector2(self.position)
     STARBOARD = pg.Vector2(DIRECTIONS[(self.heading + 2) % 8])
     for other in other_boats:
-      if not next_set & other.next_positions: continue
+      if not next_set.intersection(other.next_positions): continue
       OTHER = pg.Vector2(other.position)
       DELTA = OTHER - SELF  # vector from SELF to OTHER
       dot_product = WIND.dot(DELTA)   # if >0: OTHER is leeward, if <0: OTHER is windward if ==0: look for tack

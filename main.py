@@ -8,12 +8,12 @@ from classes.regatta import Regatta
 
 def main():
   # n = (3, 0)
-  n = (1, 0)
+  # n = (1, 0)
   # n = (1, 3)
-  # n = (0, 3)
+  n = (0, 3)
   # n = (0, 6)
 
-  # map_name = "North Bay"
+  map_name = "North Bay"
   map_name = "South Bay"
   # map_name = "Lake Lab"
 

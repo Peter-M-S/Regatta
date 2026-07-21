@@ -42,13 +42,13 @@ MAP_DATA = {
     "dock offset": 2
   },
   "South Bay": {
-    "size": (41, 67),  # rows, cols
+    "size": (42, 69),  # rows, cols
     "cell_size": get_cell_size(41, 67, WIDTH, HEIGHT),
     "islands": set([(13, 13)] +
     [(r + 1, c) for r in range(12) for c in range(11 + random.randint(-1, 1), 17 + random.randint(-1, 1))] +
     [(r + 1, c) for r in range(12) for c in range(34 + random.randint(-1, 1), 40 + random.randint(-1, 1))] +
     [(r + 28, c) for r in range(12) for c in range(32 + random.randint(-1, 1), 38 + random.randint(-1, 1))]),
-    "edges": _get_map_edges((41, 67)),
+    "edges": _get_map_edges((42, 69)),
     "race": (30, 8),
     "windbag": (30, 8),
     "marks": [

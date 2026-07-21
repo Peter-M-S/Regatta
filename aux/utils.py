@@ -16,7 +16,7 @@ def get_cell_size(r: int, c: int, w: int, h: int) -> int:
   :param h: height of screen in pixels
   :return: edge length of square cell in pixels
   """
-  return min(w // c, h // r)
+  return w//c if w/c < h/r else h//r
 
 
 def rc2xy(rc: tuple, cell_size: int, offset: bool = True) -> tuple:
