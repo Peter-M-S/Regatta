@@ -61,13 +61,14 @@ class BoatAgent:
     )
 
   @staticmethod
-  def avoid_reversals(last: str, options: set) -> set:
-    if last in ("tack", "port", "star"): return options - {"tack"}  # no double tacking
-    if last == "leeward": return options - {"windward"}  # no windward after leeward
-    if last == "windward": return options - {"leeward"}  # no leeward after windward
-    if last == "unpuff": return options - {"puff"}  # no activation after puff deactivation
-    if last == "puff": return options - {"unpuff"}  # no deactivation after puff activation
-    if last == "unspin": return options - {"spin"}  # no spinnaker up after spinnaker down
+  def avoid_reversals(sequence: list, options: set) -> set:
+    if sequence[-1] in ("tack", "port", "star"): options -= {"tack"}  # no double tacking
+    if sequence[-1] == "leeward" or sequence.count("leeward") == 3:  options -= {"windward"}  # no windward after leeward
+    if sequence[-1] == "windward" or sequence.count("windward") == 3:  options -= {"leeward"}  # no leeward after windward
+    if "unpuff" in sequence:  options -= {"puff"}  # no activation after puff deactivation
+    if "puff" in sequence: options -= {"unpuff"}  # no deactivation after puff activation
+    if "unspin" in sequence:  options -= {"spin"}  # no spinnaker up after spinnaker down, other way is OK
+    if "spin" == sequence[-1]:  options -= {"unspin"}  # no spinnaker immediately down again
     return options
 
   @staticmethod
@@ -163,7 +164,7 @@ class BoatAgent:
     options -= {"luff", "lines", "reset", "forfeit"}
 
     if self.boat.action_sequence:
-      options = self.avoid_reversals(self.boat.action_sequence[-1], options)
+      options = self.avoid_reversals(self.boat.action_sequence, options)
       # if self.boat.position == (8,23) and "sail" not in options:
       #   print("sail not an option")
 
